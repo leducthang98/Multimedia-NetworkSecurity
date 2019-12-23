@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 /**
  *
@@ -21,25 +22,11 @@ public class Lesson11 {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        File f = new File("data");
-        String fileCanTim = "23423";
-        for (File listFile : f.listFiles()) {
-            if (listFile.getName().equals(fileCanTim)) {
-                BufferedReader b = new BufferedReader(new FileReader(listFile));
-                String line1 = b.readLine(); // ten
-                String line2 = b.readLine(); // tuoi
-                String tenmoi = "thang";
-                String newData = tenmoi+"\n"+line2;
-                FileWriter fw = new FileWriter(listFile,false);
-                fw.write(newData);
-                fw.flush();
-                fw.close();
-
-            } else {
-
-            }
-        }
-
+        File f = new File("sv\\23123.txt");
+        RandomAccessFile raf = new RandomAccessFile(f, "rw");
+        raf.close();
+        System.out.println(f.delete());
+        System.out.println(f.exists());
 //        FileWriter fw = new FileWriter(f2, false);
 //        String data = "Le Duc Thang";
 //        fw.write(data); // viet du lieu vao file

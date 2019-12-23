@@ -66,6 +66,7 @@ public class DataManagement {
             }
             //add to ListSV
             listSV.add(new SinhVien(sv.getName(), ten, tuoi, diemToArr));
+            br.close();
         }
         return listSV;
     }
@@ -91,8 +92,6 @@ public class DataManagement {
         boolean result;
         File f = new File(data.getPath() + "\\" + mssv + ".txt");
         result = f.delete();
-        System.out.println(result);
-        System.out.println(f.getPath());
         return result;
     }
 
