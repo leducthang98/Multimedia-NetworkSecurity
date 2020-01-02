@@ -59,13 +59,14 @@ public class DataManagement {
             //Diem
             String diem = br.readLine();
             int[] diemToArr = new int[3];
-            int temp = 0;
+            int temp = 0; // 8 8 7
             for (String s : diem.split(" ")) {
                 diemToArr[temp] = Integer.parseInt(s);
                 temp++;
             }
+            SinhVien cache = new SinhVien(sv.getName(), ten, tuoi, diemToArr);
             //add to ListSV
-            listSV.add(new SinhVien(sv.getName(), ten, tuoi, diemToArr));
+            listSV.add(cache);
             br.close();
         }
         return listSV;
@@ -150,18 +151,16 @@ public class DataManagement {
                     for (int i = 0; i < data.size(); i++) {
                         for (int j = i + 1; j < data.size(); j++) {
                             if (data.get(i).trungBinhMon < data.get(j).trungBinhMon) {
-                                SinhVien sv = data.get(i);
-                                data.set(i, data.get(j));
-                                data.set(j, sv);
+                                SinhVien sv = data.get(i); // int temp = a[i]
+                                data.set(i, data.get(j));  // a[i] = a[j]
+                                data.set(j, sv);           //a[j] = temp
                             }
                         }
                     }
                     for (int i = 0; i < data.size(); i++) {
                         data.get(i).hienThi();
                     }
-
                     break;
-
             }
         }
     }
