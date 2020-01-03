@@ -19,7 +19,7 @@ public class Sharpen {
 
     int[][] kernel = {
         {0, -1, 0},
-        {-1, 5, -1},
+        {-1, 4, -1},
         {0, -1, 0},};
     int[][] matrixPixelR = new int[3][3];
     int[][] matrixPixelG = new int[3][3];

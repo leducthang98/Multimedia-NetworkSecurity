@@ -12,10 +12,14 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -31,9 +35,10 @@ public class Multimedia {
     JFrame frame;
     JLabel pn1, pn2, diffirent;
     Dimension screenSize;
-    JButton addImgBtn, btnRefresh, btnSharpener, btnScaleGray, btnExcute;
+    JButton addImgBtn, btnRefresh, btnSharpener, btnScaleGray, btnExcute, btnHistogram, btnSharpenerUsingLib;
     ImageIcon addIcon, imgPn1, imgPn2;
     String choosePath, chooseFileName;
+
     int diffirentPercentage = 0;
 
     public Multimedia() {
@@ -85,6 +90,12 @@ public class Multimedia {
         diffirent = new JLabel("difference: " + diffirentPercentage + " pixel");
         diffirent.setBounds(60, (int) (screenSize.getHeight() / 1.5) + 30 + 100 + btnScaleGray.getHeight() + 30, 500, 40);
         diffirent.setFont(new Font("Courier New", Font.ITALIC, 20));
+
+        btnHistogram = new JButton("Normalize");
+        btnHistogram.setBounds(60, (int) (screenSize.getHeight() / 1.5) + 30 + 60 + btnScaleGray.getHeight() + 30, 100, 40);
+
+        btnSharpenerUsingLib = new JButton("SharpenByLib");
+        btnSharpenerUsingLib.setBounds(60 + 100 + 40, (int) (screenSize.getHeight() / 1.5) + 30 + 60 + btnScaleGray.getHeight() + 30, 100 + 40 + 100, 40);
     }
 
     private void addComponent() {
@@ -96,6 +107,8 @@ public class Multimedia {
         frame.add(btnSharpener);
         frame.add(diffirent);
 //        frame.add(btnExcute);
+        frame.add(btnHistogram);
+        frame.add(btnSharpenerUsingLib);
     }
 
     private void addEvent() {
@@ -157,6 +170,56 @@ public class Multimedia {
                 }
             }
         });
+        btnHistogram.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (pn1.getIcon() != null) {
+                    File afterNormalize;
+                    try {
+                        afterNormalize = new Histogram().Excute(choosePath);
+                        imgPn2 = new ImageIcon(afterNormalize.getPath());
+                        imgPn2 = new ImageIcon(imgPn2.getImage().getScaledInstance(pn2.getWidth(), pn2.getHeight(), BufferedImage.SCALE_DEFAULT));
+                        pn2.setIcon(imgPn2);
+                        File Origin = new File(choosePath);
+                        diffirentPercentage = new Compare().Compares(Origin, afterNormalize);
+                        diffirent.setText("difference: " + diffirentPercentage + " pixel");
+                    } catch (IOException ex) {
+                        Logger.getLogger(Multimedia.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+            }
+        });
+        btnSharpenerUsingLib.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    File originalImage = new File(choosePath);
+                    BufferedImage img = null;
+                    img = ImageIO.read(originalImage);
+                    if (pn1.getIcon() != null) {
+                        Kernel kernel = new Kernel(3, 3,
+                                new float[]{
+                                    0, -1, 0,
+                                    -1, 5, -1,
+                                    0, -1, 0});
+                        BufferedImageOp op = new ConvolveOp(kernel);
+                        img = op.filter(img, null);
+                        File f = new File("data\\" + originalImage.getName() + "_Sharpen.png");
+                        ImageIO.write(img, "png", f);
+                        imgPn2 = new ImageIcon(f.getPath());
+                        imgPn2 = new ImageIcon(imgPn2.getImage().getScaledInstance(pn2.getWidth(), pn2.getHeight(), BufferedImage.SCALE_DEFAULT));
+                        pn2.setIcon(imgPn2);
+                        File Origin = new File(choosePath);
+                        diffirentPercentage = new Compare().Compares(Origin, f);
+                        diffirent.setText("difference: " + diffirentPercentage + " pixel");
+                    }
+
+                } catch (IOException ex) {
+                    Logger.getLogger(Multimedia.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
     }
 
     private void showGUI() {
@@ -165,6 +228,7 @@ public class Multimedia {
 
     public static void main(String[] args) {
         new Multimedia();
+
     }
 
 }
