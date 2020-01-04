@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import org.w3c.dom.css.RGBColor;
 
 /**
  *
@@ -19,7 +20,7 @@ public class Sharpen {
 
     int[][] kernel = {
         {0, -1, 0},
-        {-1, 4, -1},
+        {-1, 5, -1},
         {0, -1, 0},};
     int[][] matrixPixelR = new int[3][3];
     int[][] matrixPixelG = new int[3][3];
@@ -32,6 +33,7 @@ public class Sharpen {
         int width = img.getWidth();
         for (int x = 1; x < width - 1; x++) {
             for (int y = 1; y < height - 1; y++) {
+
                 matrixPixelR[0][0] = new Color(img.getRGB(x - 1, y - 1)).getRed();
                 matrixPixelR[0][1] = new Color(img.getRGB(x - 1, y)).getRed();
                 matrixPixelR[0][2] = new Color(img.getRGB(x - 1, y + 1)).getRed();
@@ -103,6 +105,7 @@ public class Sharpen {
                 } else if (currentB < 0) {
                     currentB = 0;
                 }
+
                 Color c = new Color(currentR, currentG, currentB);
                 img.setRGB(x, y, c.getRGB());
 

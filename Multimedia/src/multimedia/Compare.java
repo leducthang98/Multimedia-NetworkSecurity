@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 
 public class Compare {
 
-    int totalPixelDiff = 0;
+    int totalPixelDiff = 1;
     BufferedImage imgA = null;
     BufferedImage imgB = null;
     long difference = 0;
@@ -17,7 +17,7 @@ public class Compare {
     }
     int widthA, widthB, heightA, heightB;
 
-    public int Compares(File fileA, File fileB) {
+    public int[] Compares(File fileA, File fileB) {
         try {
             imgA = ImageIO.read(fileA);
             imgB = ImageIO.read(fileB);
@@ -47,21 +47,24 @@ public class Compare {
                         int differenceRed = Math.abs(redA - redB);
                         int differenceGreen = Math.abs(greenA - greenB);
                         int differenceBlue = Math.abs(blueA - blueB);
-                        int avg = (differenceRed + differenceGreen + differenceBlue) / 255;
-                       
-                        difference += avg;  
+                        int avg = (differenceRed + differenceGreen + differenceBlue) / 3;
+
+                        difference += avg;
                         totalPixelDiff++;
                     }
                 }
             }
         }
-        return (int) totalPixelDiff;
+        long percent = (long) (difference * 100) / (totalPixelDiff * 256);
+        System.out.println("compare: " + difference + ":" + totalPixelDiff);
+        System.out.println("percent: " + percent);
+        int returnStatement[] = new int[2];
+        returnStatement[0] = totalPixelDiff;
+        returnStatement[1] = (int) percent;
+        return returnStatement;
     }
 
     public static void main(String[] args) {
-        File fileA = new File("grayscale.png");
-        File fileB = new File("image.png");
-        int x = new Compare().Compares(fileA, fileB);
-        System.out.println(x);
+
     }
 }

@@ -35,7 +35,7 @@ public class Multimedia {
     JFrame frame;
     JLabel pn1, pn2, diffirent;
     Dimension screenSize;
-    JButton addImgBtn, btnRefresh, btnSharpener, btnScaleGray, btnExcute, btnHistogram, btnSharpenerUsingLib;
+    JButton addImgBtn, btnRefresh, btnSharpener, btnScaleGray, btnExcute, btnHistogram, btnSharpenerUsingLib, btnBinary;
     ImageIcon addIcon, imgPn1, imgPn2;
     String choosePath, chooseFileName;
 
@@ -87,7 +87,7 @@ public class Multimedia {
         btnExcute = new JButton("Excute");
         btnExcute.setBounds(60, (int) (screenSize.getHeight() / 1.5) + 30 + 60 + btnScaleGray.getHeight() + 30, 100, 40);
 
-        diffirent = new JLabel("difference: " + diffirentPercentage + " pixel");
+        diffirent = new JLabel("difference: " + diffirentPercentage + " %");
         diffirent.setBounds(60, (int) (screenSize.getHeight() / 1.5) + 30 + 100 + btnScaleGray.getHeight() + 30, 500, 40);
         diffirent.setFont(new Font("Courier New", Font.ITALIC, 20));
 
@@ -96,6 +96,9 @@ public class Multimedia {
 
         btnSharpenerUsingLib = new JButton("SharpenByLib");
         btnSharpenerUsingLib.setBounds(60 + 100 + 40, (int) (screenSize.getHeight() / 1.5) + 30 + 60 + btnScaleGray.getHeight() + 30, 100 + 40 + 100, 40);
+
+        btnBinary = new JButton("BlackAndWhite");
+        btnBinary.setBounds(60 + 100 + 40 + 140 + 140, (int) (screenSize.getHeight() / 1.5) + 30 + 60 + btnScaleGray.getHeight() + 30, 100 + 40 + 100, 40);
     }
 
     private void addComponent() {
@@ -109,12 +112,14 @@ public class Multimedia {
 //        frame.add(btnExcute);
         frame.add(btnHistogram);
         frame.add(btnSharpenerUsingLib);
+        frame.add(btnBinary);
     }
 
     private void addEvent() {
         addImgBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+
                 JFileChooser chooser = new JFileChooser("C:\\Users\\Wind\\Documents\\NetBeansProjects\\codese-basic-04\\Multimedia");
                 int a = chooser.showOpenDialog(frame);
                 if (a == JFileChooser.APPROVE_OPTION) {
@@ -146,8 +151,8 @@ public class Multimedia {
                     imgPn2 = new ImageIcon(imgPn2.getImage().getScaledInstance(pn2.getWidth(), pn2.getHeight(), BufferedImage.SCALE_DEFAULT));
                     pn2.setIcon(imgPn2);
                     File Origin = new File(choosePath);
-                    diffirentPercentage = new Compare().Compares(Origin, afterScale);
-                    diffirent.setText("difference: " + diffirentPercentage + " pixel");
+                    diffirentPercentage = new Compare().Compares(Origin, afterScale)[1];
+                    diffirent.setText("difference: " + diffirentPercentage + " %");
                 }
             }
         });
@@ -161,8 +166,8 @@ public class Multimedia {
                         imgPn2 = new ImageIcon(afterSharpen.getPath());
                         imgPn2 = new ImageIcon(imgPn2.getImage().getScaledInstance(pn2.getWidth(), pn2.getHeight(), BufferedImage.SCALE_DEFAULT));
                         pn2.setIcon(imgPn2);
-                        diffirentPercentage = new Compare().Compares(origin, afterSharpen);
-                        diffirent.setText("difference: " + diffirentPercentage + " pixel");
+                        diffirentPercentage = new Compare().Compares(origin, afterSharpen)[1];
+                        diffirent.setText("difference: " + diffirentPercentage + " %");
                     } catch (IOException ex) {
                         Logger.getLogger(Multimedia.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -181,8 +186,9 @@ public class Multimedia {
                         imgPn2 = new ImageIcon(imgPn2.getImage().getScaledInstance(pn2.getWidth(), pn2.getHeight(), BufferedImage.SCALE_DEFAULT));
                         pn2.setIcon(imgPn2);
                         File Origin = new File(choosePath);
-                        diffirentPercentage = new Compare().Compares(Origin, afterNormalize);
-                        diffirent.setText("difference: " + diffirentPercentage + " pixel");
+                        diffirentPercentage = new Compare().Compares(Origin, afterNormalize)[1];
+                        diffirent.setText("difference: " + diffirentPercentage + " %");
+                        
                     } catch (IOException ex) {
                         Logger.getLogger(Multimedia.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -205,18 +211,36 @@ public class Multimedia {
                                     0, -1, 0});
                         BufferedImageOp op = new ConvolveOp(kernel);
                         img = op.filter(img, null);
-                        File f = new File("data\\" + originalImage.getName() + "_Sharpen.png");
+                        File f = new File("data\\" + originalImage.getName() + "_Sharpennnnnn.png");
                         ImageIO.write(img, "png", f);
                         imgPn2 = new ImageIcon(f.getPath());
                         imgPn2 = new ImageIcon(imgPn2.getImage().getScaledInstance(pn2.getWidth(), pn2.getHeight(), BufferedImage.SCALE_DEFAULT));
                         pn2.setIcon(imgPn2);
                         File Origin = new File(choosePath);
-                        diffirentPercentage = new Compare().Compares(Origin, f);
-                        diffirent.setText("difference: " + diffirentPercentage + " pixel");
+                        diffirentPercentage = new Compare().Compares(Origin, f)[1];
+                        diffirent.setText("difference: " + diffirentPercentage + " %");
                     }
 
                 } catch (IOException ex) {
                     Logger.getLogger(Multimedia.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        btnBinary.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (pn1.getIcon() != null) {
+                    try {
+                        File afterScale = new BinaryImage().Excute(choosePath);
+                        imgPn2 = new ImageIcon(afterScale.getPath());
+                        imgPn2 = new ImageIcon(imgPn2.getImage().getScaledInstance(pn2.getWidth(), pn2.getHeight(), BufferedImage.SCALE_DEFAULT));
+                        pn2.setIcon(imgPn2);
+                        File Origin = new File(choosePath);
+                        diffirentPercentage = new Compare().Compares(Origin, afterScale)[1];
+                        diffirent.setText("difference: " + diffirentPercentage + " %");
+                    } catch (IOException ex) {
+                        Logger.getLogger(Multimedia.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         });
