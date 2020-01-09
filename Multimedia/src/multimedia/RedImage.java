@@ -5,6 +5,7 @@
  */
 package multimedia;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
@@ -25,11 +26,15 @@ public class RedImage {
         int height = img.getHeight();
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                int p = img.getRGB(x, y);
-                int a = (p >> 24) & 0xff;
-                int r = (p >> 16) & 0xff;
-                p = (a << 24) | (r << 16) | (0 << 8) | 0;
-                img.setRGB(x, y, p);
+                Color c = new Color(img.getRGB(x, y));
+                int red = c.getRed();
+                int green = c.getGreen();
+                int blue = c.getBlue();
+                green = 0;
+                blue = 0;
+                Color c2 = new Color(red, green, blue);
+                img.setRGB(x, y, c2.getRGB());
+
             }
         }
         File f2 = new File("data\\" + f.getName() + "_Red.png");
